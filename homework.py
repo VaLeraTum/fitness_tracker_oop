@@ -27,11 +27,11 @@ class Training:
     LEN_STEP = 0.65
     MIN_IN_H = 60
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 ) -> None:
+    def __init__(
+            self,
+            action: int,
+            duration: float,
+            weight: float,) -> None:
         self.action = action
         self.duration = duration
         self.weight = weight
@@ -46,11 +46,12 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        return InfoMessage(self.__class__.__name__, self.duration,
+        return InfoMessage(self.__class__.__name__,
+                           self.duration,
                            self.get_distance(),
                            self.get_mean_speed(),
                            self.get_spent_calories())
@@ -75,9 +76,12 @@ class SportsWalking(Training):
     KMH_IN_MSEC = 0.278
     CM_IN_M = 100
 
-    def __init__(self, action: int,
-                 duration: float,
-                 weight: float, height: float) -> None:
+    def __init__(
+            self,
+            action: int,
+            duration: float,
+            weight: float,
+            height: float) -> None:
         super().__init__(action, duration, weight)
         self.height = height
 
@@ -87,7 +91,9 @@ class SportsWalking(Training):
                  * self.KMH_IN_MSEC) ** 2)
                 / (self.height / self.CM_IN_M)
                  * self.CALORIES_SPEED_HEIGHT_MULTIPLIER
-                 * self.weight) * (self.duration * self.MIN_IN_H))
+                 * self.weight)
+                * (self.duration
+                * self.MIN_IN_H))
 
 
 class Swimming(Training):
@@ -96,9 +102,13 @@ class Swimming(Training):
     CALORIES_WEIGHT_SHIFT = 1.1
     LEN_STEP = 1.38
 
-    def __init__(self, action: int, duration: float,
-                 weight: float, length_pool: float,
-                 count_pool: int) -> None:
+    def __init__(
+            self,
+            action: int,
+            duration: float,
+            weight: float,
+            length_pool: float,
+            count_pool: int) -> None:
         super().__init__(action, duration, weight)
         self.length_pool = length_pool
         self.count_pool = count_pool
@@ -118,8 +128,13 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_type = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
-    return training_type[workout_type](*data)
+    training_type = {'SWM': Swimming,
+                     'RUN': Running,
+                     'WLK': SportsWalking}
+    if workout_type not in training_type:
+        return 'Неизвестная тренировка'
+    else:
+        return training_type[workout_type](*data)
 
 
 def main(training: Training) -> None:
