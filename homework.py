@@ -114,9 +114,8 @@ class Swimming(Training):
         self.count_pool = count_pool
 
     def get_mean_speed(self) -> float:
-        self.speed = (self.length_pool * self.count_pool / self.M_IN_KM
-                      / self.duration)
-        return self.speed
+        return (self.length_pool * self.count_pool / self.M_IN_KM
+                / self.duration)
 
     def get_spent_calories(self) -> float:
         return ((self.get_mean_speed()
@@ -132,9 +131,8 @@ def read_package(workout_type: str, data: list) -> Training:
                      'RUN': Running,
                      'WLK': SportsWalking}
     if workout_type not in training_type:
-        return 'Неизвестная тренировка'
-    else:
-        return training_type[workout_type](*data)
+        raise Exception('Неизвестная тренировка')
+    return training_type[workout_type](*data)
 
 
 def main(training: Training) -> None:
